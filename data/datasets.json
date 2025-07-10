@@ -1,0 +1,126 @@
+{
+    "query": "",
+    "options": {
+      "option_1": {
+        "name": "ECMWF/CAMS/NRT",
+        "description": "Provides near-real-time atmospheric data including aerosols and air quality",
+        "cadence": "hourly to daily",
+        "parameters": {
+          "variables": [
+            "total_aerosol_optical_depth_at_550nm_surface",
+            "particulate_matter_d_less_than_25_um_surface"
+          ]
+        }
+      },
+      "option_2": {
+        "name": "NOAA/CFSR",
+        "description": "Provides historical and reanalysis-based climate and atmospheric data including temperature, precipitation, humidity, wind components, soil moisture, cloud cover, radiation fluxes, and various surface and atmospheric variables. Ideal for multi-dimensional climate modeling, hydrological studies, and environmental analysis with high-resolution temporal coverage.",
+        "cadence": "hourly to daily",
+        "parameters": {
+          "variables": [
+            "u-component_of_wind_hybrid",
+            "v-component_of_wind_hybrid",
+            "Categorical_Rain_surface",
+            "Cloud_water_entire_atmosphere_single_layer",
+            "Convective_available_potential_energy_surface",
+            "Downward_Long-Wave_Radp_Flux_surface",
+            "Downward_Short-Wave_Radiation_Flux_surface",
+            "Exchange_Coefficient_surface",
+            "Frictional_Velocity_surface",
+            "Ground_Heat_Flux_surface",
+            "Ice_cover_surface",
+            "Ice_thickness_surface",
+            "Land_cover_0__sea_1__land_surface",
+            "Latent_heat_net_flux_surface",
+            "Liquid_Volumetric_Soil_Moisture_non_Frozen_depth_below_surface_layer_5_cm",
+            "Liquid_Volumetric_Soil_Moisture_non_Frozen_depth_below_surface_layer_25_cm",
+            "Liquid_Volumetric_Soil_Moisture_non_Frozen_depth_below_surface_layer_70_cm",
+            "Liquid_Volumetric_Soil_Moisture_non_Frozen_depth_below_surface_layer_150_cm",
+            "Plant_Canopy_Surface_Water_surface",
+            "Planetary_Boundary_Layer_Height_surface",
+            "Potential_Evaporation_Rate_surface",
+            "Precipitable_water_entire_atmosphere_single_layer",
+            "Precipitable_water_pressure_difference_layer",
+            "Pressure_surface",
+            "Pressure_reduced_to_MSL_msl",
+            "Relative_humidity_entire_atmosphere_single_layer",
+            "Sensible_heat_net_flux_surface",
+            "Snow_depth_surface",
+            "Soil_moisture_content_depth_below_surface_layer",
+            "Soil_type_surface",
+            "Specific_humidity_height_above_ground",
+            "Surface_Lifted_Index_surface",
+            "Surface_roughness_surface",
+            "Surface_Slope_Type_surface",
+            "Temperature_depth_below_surface_layer_5_cm",
+            "Temperature_depth_below_surface_layer_25_cm",
+            "Temperature_depth_below_surface_layer_70_cm",
+            "Temperature_depth_below_surface_layer_150_cm",
+            "Temperature_height_above_ground",
+            "Temperature_surface",
+            "Total_cloud_cover_convective_cloud",
+            "Total_ozone_entire_atmosphere_single_layer",
+            "Upward_Long-Wave_Radp_Flux_surface",
+            "Upward_Short-Wave_Radiation_Flux_surface",
+            "Vegetation_surface",
+            "Vegetation_Type_surface",
+            "Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm",
+            "Volumetric_Soil_Moisture_Content_depth_below_surface_layer_25_cm",
+            "Volumetric_Soil_Moisture_Content_depth_below_surface_layer_70_cm",
+            "Volumetric_Soil_Moisture_Content_depth_below_surface_layer_150_cm",
+            "Water_equivalent_of_accumulated_snow_depth_surface"
+          ]
+        }
+      },
+      "option_3": {
+        "name": "GOOGLE/DYNAMICWORLD/V1",
+        "description": "Near-real-time land use and land cover classification derived from Sentinel-2 imagery",
+        "cadence": "5-day (Sentinel-2 revisit)",
+        "parameters": {
+          "variables": [
+            "water",
+            "trees",
+            "grass",
+            "flooded_vegetation",
+            "crops",
+            "shrub_and_scrub",
+            "built",
+            "bare",
+            "snow_and_ice",
+            "label"
+          ]
+        }
+      },
+      "option_4": {
+        "name": "MODIS/061/MOD13A1",
+        "description": "Provides NDVI and EVI vegetation indices to assess vegetation health globally",
+        "cadence": "16-day",
+        "parameters": {
+          "variables": [
+            "NDVI",
+            "EVI"
+          ]
+        }
+      },
+      "option_5": {
+        "name": "MODIS/061/MOD11A1",
+        "description": "Daily land surface temperature and emissivity data for climate trend analysis",
+        "cadence": "daily",
+        "parameters": {
+          "variables": [
+            "LST_Day_1km",
+            "QC_Day",
+            "LST_Night_1km",
+            "QC_Night"
+          ]
+        }
+      }
+    },
+    "instructions": [
+      "Use only the options necessary to answer the query.",
+      "You can use more than one option.",
+      "Use the parameters exactly as provided under each option.",
+      "Do not mix or reuse parameters between options."
+    ]
+  }
+  
