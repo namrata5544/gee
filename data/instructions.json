@@ -1,0 +1,9 @@
+{
+  "instructions": [
+    "Carefully read the query and extract relevant details such as location (region or coordinates), start and end date, and topic of analysis (e.g., temperature trend, vegetation change, etc.).",
+    "Select only the dataset(s) from the 'options' list that are most relevant to answering the query. You may use more than one dataset if necessary.",
+    "For each selected dataset, use only the parameters listed in its 'parameters' field. Do not use or mix parameters from other datasets.",
+    "Respect each dataset's cadence (e.g., daily, 16-day, hourly) and spatial/temporal characteristics while designing your analysis.",
+    "If the query implies a specific analysis (e.g., trend detection, anomaly detection, comparison), choose an appropriate method from a predefined list (e.g., analysis_options.txt)."
+  ]
+}

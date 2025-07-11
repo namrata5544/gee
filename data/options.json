@@ -1,10 +1,9 @@
 {
-    "query": "",
     "options": {
       "option_1": {
         "name": "ECMWF/CAMS/NRT",
         "description": "Provides near-real-time atmospheric data including aerosols and air quality",
-        "cadence": "hourly to daily",
+        "cadence": "daily",
         "parameters": {
           "variables": [
             "total_aerosol_optical_depth_at_550nm_surface",
@@ -14,8 +13,8 @@
       },
       "option_2": {
         "name": "NOAA/CFSR",
-        "description": "Provides historical and reanalysis-based climate and atmospheric data including temperature, precipitation, humidity, wind components, soil moisture, cloud cover, radiation fluxes, and various surface and atmospheric variables. Ideal for multi-dimensional climate modeling, hydrological studies, and environmental analysis with high-resolution temporal coverage.",
-        "cadence": "hourly to daily",
+        "description": "Provides climate and atmospheric data including temperature, precipitation, humidity, wind components, soil moisture, cloud cover, radiation fluxes, and various surface and atmospheric variables. Ideal for multi-dimensional climate modeling, hydrological studies, and environmental analysis with high-resolution temporal coverage.",
+        "cadence": "daily",
         "parameters": {
           "variables": [
             "u-component_of_wind_hybrid",
@@ -75,7 +74,7 @@
       "option_3": {
         "name": "GOOGLE/DYNAMICWORLD/V1",
         "description": "Near-real-time land use and land cover classification derived from Sentinel-2 imagery",
-        "cadence": "5-day (Sentinel-2 revisit)",
+        "cadence": "5-day",
         "parameters": {
           "variables": [
             "water",
@@ -109,18 +108,9 @@
         "parameters": {
           "variables": [
             "LST_Day_1km",
-            "QC_Day",
-            "LST_Night_1km",
-            "QC_Night"
+            "LST_Night_1km"
           ]
         }
       }
-    },
-    "instructions": [
-      "Use only the options necessary to answer the query.",
-      "You can use more than one option.",
-      "Use the parameters exactly as provided under each option.",
-      "Do not mix or reuse parameters between options."
-    ]
-  }
-  
+    }
+}
