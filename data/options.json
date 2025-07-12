@@ -1,22 +1,19 @@
 {
-    "options": {
-      "option_1": {
+    "options": [
+      {
         "name": "ECMWF/CAMS/NRT",
         "description": "Provides near-real-time atmospheric data including aerosols and air quality",
         "cadence": "daily",
-        "parameters": {
-          "variables": [
+        "parameters": [
             "total_aerosol_optical_depth_at_550nm_surface",
             "particulate_matter_d_less_than_25_um_surface"
           ]
-        }
       },
-      "option_2": {
+      {
         "name": "NOAA/CFSR",
         "description": "Provides climate and atmospheric data including temperature, precipitation, humidity, wind components, soil moisture, cloud cover, radiation fluxes, and various surface and atmospheric variables. Ideal for multi-dimensional climate modeling, hydrological studies, and environmental analysis with high-resolution temporal coverage.",
         "cadence": "daily",
-        "parameters": {
-          "variables": [
+        "parameters":  [
             "u-component_of_wind_hybrid",
             "v-component_of_wind_hybrid",
             "Categorical_Rain_surface",
@@ -69,14 +66,13 @@
             "Volumetric_Soil_Moisture_Content_depth_below_surface_layer_150_cm",
             "Water_equivalent_of_accumulated_snow_depth_surface"
           ]
-        }
+        
       },
-      "option_3": {
+      {
         "name": "GOOGLE/DYNAMICWORLD/V1",
         "description": "Near-real-time land use and land cover classification derived from Sentinel-2 imagery",
         "cadence": "5-day",
-        "parameters": {
-          "variables": [
+        "parameters":  [
             "water",
             "trees",
             "grass",
@@ -88,29 +84,27 @@
             "snow_and_ice",
             "label"
           ]
-        }
+        
       },
-      "option_4": {
+      {
         "name": "MODIS/061/MOD13A1",
         "description": "Provides NDVI and EVI vegetation indices to assess vegetation health globally",
         "cadence": "16-day",
-        "parameters": {
-          "variables": [
+        "parameters":  [
             "NDVI",
             "EVI"
           ]
-        }
       },
-      "option_5": {
+      {
         "name": "MODIS/061/MOD11A1",
         "description": "Daily land surface temperature and emissivity data for climate trend analysis",
         "cadence": "daily",
-        "parameters": {
-          "variables": [
+        "parameters": [
             "LST_Day_1km",
             "LST_Night_1km"
           ]
-        }
+        
       }
-    }
+    ]
+    
 }

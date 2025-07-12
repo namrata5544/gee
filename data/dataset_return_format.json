@@ -1,0 +1,33 @@
+{
+  "analysis": [
+    {
+      "dataset": "Dataset_Name_or_ID",
+      "parameters": [
+        {
+          "name": "parameter_name",
+          "reason": "Why this parameter is relevant",
+          "analysis_type": "trend | anomaly | seasonal | comparison | correlation | change_detection | classification | clustering | statistics | spatial_distribution | forecast",
+          "compare_with": [
+            {
+              "parameter": "parameter_name_to_compare",
+              "dataset": "optional_dataset_name_if_different",
+              "reason": "Why this comparison is useful"
+            }
+          ]
+        },
+        {
+          "name": "parameter_name",
+          "reason": "Why this parameter is relevant",
+          "analysis_type": "trend | anomaly | seasonal | comparison | correlation | change_detection | classification | clustering | statistics | spatial_distribution | forecast",
+          "compare_with": [
+            {
+              "parameter": "parameter_name_to_compare",
+              "dataset": "optional_dataset_name_if_different",
+              "reason": "Why this comparison is useful"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

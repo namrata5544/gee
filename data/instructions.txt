@@ -1,0 +1,17 @@
+INSTRUCTIONS:
+
+- Read the user query carefully and extract Topic of analysis (e.g., temperature trend, vegetation change)
+
+- From the dataset options provided:
+  - Select only the dataset(s) most relevant to the query
+  - You may select multiple datasets if necessary
+  - Select the paramters that you want and use only the parameters listed for each dataset
+
+- Do not mix parameters between datasets or invent new ones.
+
+- Respect each dataset's cadence (e.g., daily, 16-day, hourly) and its spatial/temporal resolution when designing your analysis.
+- Strictly return your output in JSON format provided below, DO NOT RETURN ANYTHING EXCEPT THAT FORMAT
+- Choose an appropriate analysis type based on the query intent.
+  Supported types include:
+  trend, anomaly, seasonal, comparison, correlation, change_detection,
+  classification, clustering, statistics, spatial_distribution, forecast.
