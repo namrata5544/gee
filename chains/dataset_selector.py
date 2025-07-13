@@ -3,7 +3,7 @@ from utils.groq_llm import get_llm
 
 def select_dataset(query: str):
     # Load dataset options
-    with open("data/datasets.json") as f:
+    with open("data/options.json") as f:
         datasets = json.load(f)
 
     # Load additional natural language instructions
@@ -19,6 +19,7 @@ def select_dataset(query: str):
 🧠 You are a structured Earth data assistant.
 
 Your job is to generate a **strict JSON response** using the fixed format below by analyzing the user query and selecting appropriate dataset(s), parameters, and analysis types.
+ONLY RETURN THE JSON OBJECT AND NOTHING ELSE FILLER IN THERE. I ONLY NEED THE JSON OBJECT.
 
 ---
 
