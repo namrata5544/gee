@@ -1,10 +1,192 @@
 from utils.groq_llm import get_llm
 
-def generate_gee_code(region, start_date, end_date, dataset):
-    prompt = f"""
-    Write Google Earth Engine Python API code to fetch {dataset} data for the region "{region}" 
-    from "{start_date}" to "{end_date}". Print the extracted values.
+def generate_gee_code(coordinates, start_date, end_date, dataset_instructions):
+    lat, lon = coordinates[0], coordinates[1]
 
-    Output should be valid Python code using geemap or ee library. Keep it simple and modular.
-    """
+    prompt = f"""
+You are an expert in Google Earth Engine (GEE) and statistical analysis.
+
+You must write a complete Python script that:
+1. Uses the GEE Python API to extract parameter data for a given coordinate and time range
+2. Dynamically splits the time range into smaller windows (e.g., months, weeks) for better temporal resolution
+3. Parallelizes GEE `.getInfo()` calls for each time window
+4. Analyzes the resulting time series using Python libraries
+5. Summarizes the statistical insights via a Groq LLM
+
+---
+
+📍 REGION: Latitude = {lat}, Longitude = {lon}  
+📅 TIME RANGE: {start_date} to {end_date}  
+📊 DATASETS & PARAMETERS:  
+{dataset_instructions}
+
+---
+
+🔹 STEP 1: Required Imports & Initialization
+
+Begin with:
+
+```python
+import ee
+import json
+import numpy as np
+import pandas as pd
+import scipy.stats as stats
+import statsmodels.api as sm
+from sklearn.linear_model import LinearRegression
+from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timedelta
+
+from langchain.chat_models import ChatGroq
+from langchain.schema import HumanMessage
+
+# GEE Auth
+SERVICE_ACCOUNT_EMAIL = 'earthengine@randomyt-446112.iam.gserviceaccount.com'
+KEY_FILE = 'earthenginekey.json'
+credentials = ee.ServiceAccountCredentials(SERVICE_ACCOUNT_EMAIL, KEY_FILE)
+ee.Initialize(credentials)
+
+# Groq LLM Client
+chat = ChatGroq(api_key="sk-your-hardcoded-api-key", model="mixtral-8x7b-32768")
+```
+
+🔹 STEP 2: Split Time into Blocks Based on Range
+
+Based on how long the time range {start_date} to {end_date} is:
+
+If range > 1 year → split into monthly blocks
+
+If range > 3 months → split into biweekly blocks
+
+If range < 3 months → split into daily blocks
+
+Generate a list of (start, end) tuples representing these time blocks. For example:
+
+```python
+time_blocks = [
+    ("2022-01-01", "2022-01-31"),
+    ("2022-02-01", "2022-02-28"),
+    ...
+]
+```
+✅ This ensures multiple .getInfo() samples for time series analysis
+✅ This logic must be done dynamically based on the actual input range
+
+🔹 STEP 3: For Each Dataset and Parameter, Fetch Multiple Data Points
+
+Loop through input_json["analysis"] dynamically:
+
+```json
+{{
+  "dataset": "Dataset_ID",
+  "parameters": [
+    {{ "name": "parameter_name", ... }}
+  ]
+}}
+```
+
+For each (dataset, parameter), do the following:
+
+For each (start, end) time block:
+
+Filter and select:
+
+```python
+ee.ImageCollection(dataset_id)
+    .filterDate(start, end)
+    .select(parameter_name)
+    .mean()
+```
+
+Extract value using .reduceRegion() at scale=10000 over:
+
+```python
+point = ee.Geometry.Point({lon}, {lat})
+```
+
+Collect each returned value into a list:
+
+```python
+[value1, value2, ..., valueN]
+```
+
+Use ThreadPoolExecutor(max_workers=10) to parallelize across time blocks
+
+Store the full array of data points as:
+
+```python
+data_points[f"{{dataset_id}}_{{parameter_name}}"] = [list of values from getInfo()]
+```
+
+✅ You are using ThreadPoolExecutor to parallelize across time blocks, not just across parameters
+✅ .getInfo() is synchronous — this bypasses bottlenecks
+
+🔹 STEP 4: Statistical Analysis Using Standard Libraries
+
+Using the raw time series from data_points, apply:
+
+numpy / pandas: mean, std, min, max, rolling, z-score
+
+scipy.stats: correlation, anomaly detection
+
+statsmodels.api: seasonal_decompose, OLS regression
+
+sklearn: linear regression for trend
+
+Dynamically pick the analysis type from input JSON (analysis_type) and compute matching metrics.
+
+✅ These must be calculated programmatically
+✅ Use the actual GEE values (no fake data)
+
+🔹 STEP 5: Summarize Using Groq
+
+Define:
+
+```python
+def chatgroq(summary_json):
+    return chat([HumanMessage(content=json.dumps(summary_json))]).content
+```
+
+Pass a dictionary of all statistics per parameter to Groq like:
+
+```json
+{{
+  "parameter": "NO2",
+  "mean": 24.2,
+  "std_dev": 3.4,
+  "trend_slope": 0.6,
+  "seasonality": "weekly",
+  "correlation_with_SO2": -0.3
+}}
+```
+
+Groq will return a plain-text interpretation: summary, anomalies, suggestions.
+
+✅ Use the pre-initialized chat object at the top
+❌ Do not reinitialize inside the function
+
+🔹 STEP 6: Final Output Structure
+
+Return a dictionary like:
+
+```python
+{{
+  "data_points": {{
+    "parameter_1": [val1, val2, ...],
+    "parameter_1": [val1, val2, ...]
+  }},
+  "analysis_summary": "<Groq-generated text with findings>"
+}}
+```
+
+✅ Data comes directly from .getInfo() for each time block
+✅ Statistical JSON is computed from these values
+✅ Summary is LLM-generated
+
+📌 REMEMBER:
+
+
+Store raw data per parameter which will be generated by the GEE API and returned in final output under data_points.
+
+"""
     return get_llm().invoke(prompt).content
