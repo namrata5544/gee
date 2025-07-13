@@ -2,6 +2,7 @@ import json
 from chains.parameter_selector import extract_parameters_from_query
 from chains.dataset_selector import select_dataset
 from chains.code_generator import generate_gee_code
+from chains.code_executor import execute_gee_code
 from chains.data_analyzer import analyze_data
 from chains.summarizer import summarize_findings
 
@@ -26,10 +27,5 @@ gee_code = generate_gee_code(
 print("\nGenerated GEE Code:")
 print(gee_code)
 
-# Step 4: Analyze data (you'll need to execute the GEE code first)
-# analysis_result = analyze_data(gee_output)
-# print("Analysis:", analysis_result)
-
-# Step 5: Summarize
-# summary = summarize_findings(analysis_result)
-# print("Summary:", summary)
+# Step 4: Execute the generated GEE code in sandbox
+execution_result = execute_gee_code(gee_code)
