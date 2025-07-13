@@ -3,8 +3,6 @@ from chains.parameter_selector import extract_parameters_from_query
 from chains.dataset_selector import select_dataset
 from chains.code_generator import generate_gee_code
 from chains.code_executor import execute_gee_code
-from chains.data_analyzer import analyze_data
-from chains.summarizer import summarize_findings
 
 query = "What is the rainfall trend over the past 10 years in Kerala?"
 # extract coordinates, start_date, end_date
