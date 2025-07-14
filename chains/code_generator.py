@@ -1,8 +1,13 @@
 from utils.groq_llm import get_llm
-
+from dotenv import load_dotenv
+import os
+load_dotenv()
 def generate_gee_code(coordinates, start_date, end_date, dataset_instructions):
     lat, lon = coordinates[0], coordinates[1]
-
+    groqq = os.getenv("GROQQ")
+    emaill = os.getenv("EMAILL")
+    service_dict = os.getenv("SERVICE_DICT")
+    
     prompt = f"""
 You are an expert in Google Earth Engine (GEE) and statistical analysis.
 ONLY RETURN THE PYTHON SCRIPT AND NO UNNECESSARY TEXT SURROUNDING IT AS I HAVE TO DIRECTLY EXECUTE THE CODE IN ENVIRONMENT LATER ON. 
@@ -45,21 +50,9 @@ import os
 import tempfile
 from langchain.chat_models import ChatGroq
 
-SERVICE_ACCOUNT_EMAIL = "earthengine@randomyt-446112.iam.gserviceaccount.com"
+SERVICE_ACCOUNT_EMAIL = "{emaill}"
 
-SERVICE_ACCOUNT_DICT = {{
-  "type": "service_account",
-  "project_id": "randomyt-446112",
-  "private_key_id": "a25c1f602e0dcd1ebb15c9c42639dd47841e99ba",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDUHPGIzF+F5Yzv\nXfzY/7JkFqQ9SbiLBnZ5gAMX8SXo5aqwoSLSLk/1XskNWbMKj5iM5hRBNvRfBtCt\nSzYZ7zGMShgD0STmEsyQC96JNj3iQIUP0r5mWvsbUmvayplWc1t2qbeQ5nINNyci\nHiZFRXu9mZ4J7A6jVx7QohqG4vorShOOv2nFto31DOBuh0P5f2rp3pR2sYfoj+GB\nOlDUb63VG2B3WpFAGBy9lvrYlR6Gx04jmYa4Yp1Itl17cOabvYFpbyl7fCCg80Iq\nzTCqyG9RtmpFi6Q+/nUXA6R7vvk1mCtETeDjSbbxJdFmoZxc1vY2kaJx7MHcsKpB\nCBLQ104HAgMBAAECggEAZ2ADxyvzkgoh+bbQt+FGS8lNGiGHsxnfO6/L0itQ0oS7\n/4FIuy6fAXLEgaEpxQfezSyEypPB3V4w7YQuRc1xVHH36kRPu2GGGN3wAudQmafg\nMan/6VqF7vboYaVDvgJSnS5xrEjjZNVwWQxgknoeqHTptOQ67hhTiFK4ouyUB+wa\n2invxq0yaIMAWHBUn46Q4TqruhsrcIjZ/ITocQr8V7rV+wl0PU4BM5/sZ3HsQ7Pv\nFUiBMgmFnYIpfHNlIYj5QM9J45ofcvxM6WxohejoVmncRdYdjtJrbEIaIE2z4PNr\nxY77DbBh+MjDnEeTjTDOqhhybnxy16ij+NPxeVdpYQKBgQD0zR4zr9xj6GSjHxlx\nxNUhveU/d8Gz9gi4IKO0x4TyxmLDXmhZ3txmif9PuQnesebK1CCDAI/v6ToUeVFA\n7V5+ChB4Ud0PiY3O9fhwWPbdSy7BqCouWd1gS0NJTKIUnmSSbMpzn5a2F5gdprwn\nB7r3FWto1kAuXJocLjFeHzVmbQKBgQDd0QMjrY2IKguF1bD6gZV5rix10bV3U/0G\nxgDZXaYcZv09m3/dG8XnHLl93AG2ur8Vfqsi/QTapk7dM4Vs5S1UZ/1eMyzYHJeP\nkNU/pM+QjmIQCwoJlqVwf5itwGkhYyxxHIx+syULOlpnHhhvbWBA9SuCvurLUO6M\nAo2GtZnNwwKBgDB4LHKvb0OYz9Q8ZB1Si6CSqMFYRNIM9M0AKWmx13D6NrPYDXE9\n3wWubQ6r5HhjYP7n4UgO5HDsDMPhAWWJmhv6gihQjSR2Z82Chh44fyhxqmBNm4xx\n3pMiU8A/nBfZBLC5OZyLDJwhL80vJjHUJgCmDQ5E3ZBQZXMO8ldgdoJBAoGAeK2I\n/rUiRg1R3YtH0NIFR4EJ8UOZbYVFKJU6ywdXIyao6gaahungPn9zL1UtnYN2CDS0\n2ME9DdPjHhc0pOz+P2igAMrov962WkYarph00JmWIlJPMK5D7bONliITUDXLbPJy\nQVAnfDdQDb/i3WRtNInuFSDXTqwGTCfrZXmRZs8CgYEAi9tSyWqlvEoQ/x7Va4g3\nxUXsM941cdPsPjIOuULjRgP2ogEw1ysI8hjDFUrDdnt9NUjUZ37M/Krm2QLMvsqJ\nr5o9EUyP7Uxof6jY6Pv+r52aQUS/RxrlwfI2KHlHVY3kapH5R3sNjlF7CfKh21+U\nUBIB01yStMLQr+Z2WrLBHdA=\n-----END PRIVATE KEY-----\n",
-  "client_email": "earthengine@randomyt-446112.iam.gserviceaccount.com",
-  "client_id": "114776460897363005356",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/earthengine@randomyt-446112.iam.gserviceaccount.com",
-  "universe_domain": "googleapis.com"
-}}
+SERVICE_ACCOUNT_DICT = {service_dict}
 
 
 with tempfile.NamedTemporaryFile(mode="w+", suffix=".json", delete=False) as temp_key_file:
@@ -100,7 +93,7 @@ Loop through input_json["analysis"] dynamically:
 For each (dataset, parameter), do the following:
 
 For each (start, end) time block:
-
+Use ThreadPoolExecutor(max_workers=16) to parallelize getInfo() across the divided time blocks because getInfo() calls are synchronous and if they are run parallely it would give faster execution.
 Filter and select:
 
 ```python
@@ -131,7 +124,7 @@ value.getInfo() gets us the value after reduceRegion is applied
 [value1, value2, ..., valueN]
 ```
 
-Use ThreadPoolExecutor(max_workers=10) to parallelize getInfo() across the divided time blocks
+Use ThreadPoolExecutor(max_workers=16) to parallelize getInfo() across the divided time blocks
 Store the full array of data points as:
 
 ```python
@@ -173,6 +166,7 @@ Dynamically pick the analysis type from input JSON (analysis_type) and only writ
 No need to write conditional statements for analysis as you have already determined what analysis you want to conduct.
 For the parameters mentioned in the analysis file in the input, conduct the analysis directly.
 Below is like a helper context for you to perform data analysis from. But you must write appropriate code for analysis based on the input JSON that you are given.
+If the type of analysis is to compare multiple parameters then the emphasis of data analysis must also additionally include the correlation between them using statistics.
 
 Using the raw time series from data_points, apply:
 
@@ -195,7 +189,7 @@ Define:
 
 ```python
 def get_llm():
-    chat = ChatGroq(api_key="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", model="llama-3.1-8b-instant")
+    chat = ChatGroq(api_key="{groqq}", model="llama-3.1-8b-instant")
 ```
 Groq will return a plain-text interpretation: summary, anomalies, suggestions and this is the way it will be instantiated.
 DO NOT HALLUCINATE OTHER TYPE OF USAGE DIRECTLY USE THIS TYPE AND THE NECESSARY IMPORTS HAVE ALREADY BEEN INCLUDED ABOVE.
@@ -205,7 +199,8 @@ in our main() function pass in when access the get_llm invoke the llm such as:
 ```python
 def main():
     llm = get_llm()
-    summary_text = llm.invoke("Summarize the following analysis: " + str(analysis_summary))
+    summary_text = llm.invoke("Summarize the following mathematical analysis: " + str(analysis_summary))
+    suggestions = llm.invoke("What do the following statistics mean for the end user's according to, instead of using statistical numbers, explain in human understandable format such that they can get valuable insights from the data." + str(summary_text))
 ```
 
 ```json
@@ -233,6 +228,7 @@ Return a dictionary like:
     "parameter_1": [val1, val2, ...]
   }},
   "analysis_summary": "<Groq-generated text with findings>"
+  "analysis_suggestions" : "<Groq-generated text with findings>"
 }}
 ```
 

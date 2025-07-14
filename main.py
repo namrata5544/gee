@@ -14,7 +14,7 @@ def safe_json_parse(label, raw_json_str):
         print(f"[{label}] Error: Failed to parse JSON.\nRaw Output:\n{raw_json_str}")
         raise e
 
-query = "What is the rainfall trend over the past 10 years in Kerala?"
+query = "Compare rainfall and NDVI over the past 5 years in Kerala?"
 
 # Step 1: Extract parameters from query (coordinates, start_date, end_date)
 raw_params_output = extract_parameters_from_query(query)
