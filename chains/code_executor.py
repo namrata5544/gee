@@ -14,6 +14,6 @@ def execute_gee_code(generated_code):
     print("\nExecuting code in sandbox...")
     execution = sbx.run_code(code)
     
-    stdout = execution.logs.stdout[0] if execution.logs.stdout else ""
+    stdout = execution.logs.stdout[0] if execution.logs.stdout else "error"
     
-    return execution 
+    return stdout

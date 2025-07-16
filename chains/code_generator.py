@@ -33,7 +33,7 @@ DO NOT USE from langchain.chat_models import ChatGroq
 🔹 STEP 1: Required Imports & Initialization
 
 Begin with, this step is crucial and strict do not mess up this or generate anything random here:
-
+We are trying to create a tempfile that has the the value of dict and we use to dump that dic
 ```python
 import ee
 import json
@@ -93,7 +93,7 @@ Loop through input_json["analysis"] dynamically:
 For each (dataset, parameter), do the following:
 
 For each (start, end) time block:
-Use ThreadPoolExecutor(max_workers=16) to parallelize getInfo() across the divided time blocks because getInfo() calls are synchronous and if they are run parallely it would give faster execution.
+Use ThreadPoolExecutor(max_workers=20) to parallelize getInfo() across the divided time blocks because getInfo() calls are synchronous and if they are run parallely it would give faster execution.
 Filter and select:
 
 ```python
@@ -189,7 +189,7 @@ Define:
 
 ```python
 def get_llm():
-    chat = ChatGroq(api_key="{groqq}", model="llama-3.1-8b-instant")
+    chat = ChatGroq(api_key="{groqq}", model="llama-3.3-70b-versatile")
 ```
 Groq will return a plain-text interpretation: summary, anomalies, suggestions and this is the way it will be instantiated.
 DO NOT HALLUCINATE OTHER TYPE OF USAGE DIRECTLY USE THIS TYPE AND THE NECESSARY IMPORTS HAVE ALREADY BEEN INCLUDED ABOVE.
