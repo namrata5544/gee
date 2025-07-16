@@ -199,8 +199,8 @@ in our main() function pass in when access the get_llm invoke the llm such as:
 ```python
 def main():
     llm = get_llm()
-    summary_text = llm.invoke("Summarize the following mathematical analysis: " + str(analysis_summary))
-    suggestions = llm.invoke("What do the following statistics mean for the end user's according to, instead of using statistical numbers, explain in human understandable format such that they can get valuable insights from the data." + str(summary_text))
+    summary_text = llm.invoke("Summarize the following mathematical analysis. Keep it less than 120 words. " + str(analysis_summary)).content
+    suggestions = llm.invoke("What do the following statistics mean for the end user's according to, instead of using statistical numbers, explain in human understandable format such that they can get valuable insights from the data. Keep it less than 150 words." + str(summary_text)).content
 ```
 
 ```json
