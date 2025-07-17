@@ -132,7 +132,7 @@ def make_callback(start):
             if completed == total:
                 # ✅ All async evaluations done
                 results.sort()  # Sort by start time
-                data_points[f"{dataset_id}_{parameter_name}"] = [val for _, val in results]
+                data_points[f"{{dataset_id}}_{{parameter_name}}"] = [val for _, val in results]
                 done_event.set()
     return callback
 
