@@ -2,6 +2,7 @@ import os
 import json
 
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from dotenv import load_dotenv
 
 from chains.parameter_selector import extract_parameters_from_query
@@ -14,7 +15,7 @@ from utils.groq_llm import ChatGroq
 load_dotenv()
 
 app = Flask(__name__)
-
+CORS(app)
 # Pull the Groq API key from the env
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 if not GROQ_API_KEY:
@@ -33,8 +34,8 @@ def safe_json_parse(label, raw_json_str):
         print(f"[{label}] Error: Failed to parse JSON.\nRaw Output:\n{raw_json_str}")
         raise e
 
-@app.route('/final', methods=['POST'])
-def analyze():
+@app.route('/generate', methods=['POST'])
+def generate():
     try:
         data = request.get_json()
         if not data or 'query' not in data:
@@ -58,10 +59,32 @@ def analyze():
             dataset_instructions=selected.get("analysis")
         )
 
-        # Step 4: Execute the generated GEE code
+        return jsonify({
+            'gee_code': gee_code,
+            'status': 'success'
+        })
+
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        return jsonify({'error': f'Internal server error: {str(e)}'}), 500
+
+@app.route('/execute', methods=['POST'])
+def execute():
+    try:
+        data = request.get_json()
+        if not data or 'gee_code' not in data:
+            return jsonify({'error': 'Missing gee_code parameter'}), 400
+
+        gee_code = data['gee_code']
+        
+        # Execute the generated GEE code
         execution_result = execute_gee_code(gee_code)
 
-        return jsonify({'final': execution_result})
+        return jsonify({
+            'result': execution_result,
+            'status': 'success'
+        })
 
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
