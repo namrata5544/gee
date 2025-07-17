@@ -70,12 +70,7 @@ ee.Initialize(credentials)
 Based on how long the time range {start_date} to {end_date} is divide the time duration into appropriate time blocks such that it generates 
 sufficient amount of data to make analysis.
 
-Generate a list of (start, end) tuples representing these time blocks. For example:
-⚠️ IMPORTANT: When appending multiple values to a list, always use a tuple. For example:
-✅ list.append((a, b)) and not list.append(a, b).
 
-✅ This ensures multiple .getInfo() samples for time series analysis
-✅ This logic must be done dynamically based on the actual input range
 
 🔹 STEP 3: For Each Dataset and Parameter, Fetch Multiple Data Points
 
@@ -89,69 +84,73 @@ Loop through input_json["analysis"] dynamically:
   ]
 }}
 ```
+Generate a list of (start, end) tuples representing these time blocks. For example:
+⚠️ IMPORTANT: When appending multiple values to a list, always use a tuple. For example:
+✅ list.append((a, b)) and not list.append(a, b).
+
+✅ This ensures multiple .evaluate() samples for time series analysis
+✅ This logic must be done dynamically based on the actual input range
 
 For each (dataset, parameter), do the following:
+1. Your task is to batch `.evaluate()` calls across multiple (start, end) time blocks, and collect the results cleanly. You must:
+2. For each time block:
+   - Perform an Earth Engine operation (e.g., reduceRegion or image analysis).
+   - Use `.evaluate()` (not `.getInfo()`) to get the result non-blockingly.
+   - Attach a callback that captures the time block and result.
+3. Collect all results into a list or structure, where they are marked with "start time" and "value".
+4. Wait until all `.evaluate()` callbacks are completed.
+5. Sort the results in time order as first value of the list is the time.
+6. only extract the data point like, we DO NOT need 
 
-For each (start, end) time block:
-Use ThreadPoolExecutor(max_workers=20) to parallelize getInfo() across the divided time blocks because getInfo() calls are synchronous and if they are run parallely it would give faster execution.
-Filter and select:
 
-```python
-ee.ImageCollection(dataset_id)
-    .filterDate(start, end)
-    .select(parameter_name)
-    .mean()
-```
 
+
+🔸 When collecting data from `.evaluate()`, **extract only the raw numeric value** for each parameter.
+DO NOT store the entire dictionary returned by `.evaluate()` — instead, extract just the value associated with the parameter name, which is the second value in the tuple.
+
+Store the full array of data points as for each dataset and parameter as:
+✅ For example:
+# `image`, `region`, `time_blocks`, and `parameter_name` are defined
 Extract value using .reduceRegion() at scale=10000 over:
-Following is the correct method to extract the value from here
 ```python
-point = ee.Geometry.Point({lon}, {lat})
 
-value = image.reduceRegion(
-    reducer=ee.Reducer.first(),
-    geometry=point,
-    scale=10000
-)
+point = ee.Geometry.Point({lat}, {lon})
+data_points[f"{{dataset_id}}_{{parameter_name}}"]
+results = []
+total = len(time_blocks)
+
+def make_callback(start):
+    def callback(value):
+        raw_value = value.get(parameter_name)
+        results.append((start, raw_value))
+        if len(results) == total:
+            results.sort()  # Sort by start time
+            data_points[f"{{dataset_id}}_{{parameter_name}}"] = [val for _, val in results]
+    return callback
+  
+for start, end in time_blocks:
+    filtered_img = image.filterDate(start, end)
+    reduced = filtered_img.reduceRegion(
+        reducer=ee.Reducer.first(),
+        geometry=point,
+        scale=10000,
+        maxPixels=1e9
+    )
+    reduced.evaluate(make_callback(start))
+
 ```
 Before performing any analysis (like mean, std), you must filter out None values.
 
-
 Collect each returned value into a list:
 According to above value
-value.getInfo() gets us the value after reduceRegion is applied
-```python
-[value1, value2, ..., valueN]
-```
-
-Use ThreadPoolExecutor(max_workers=16) to parallelize getInfo() across the divided time blocks
-Store the full array of data points as:
-
-```python
-data_points[f"{{dataset_id}}_{{parameter_name}}"] = [list of values from getInfo()]
-```
-
-✅ You are using ThreadPoolExecutor to parallelize across time blocks, not just across parameters
-✅ .getInfo() is synchronous — this bypasses bottlenecks
 Before performing any analysis (like mean, std), you must filter out None values.
 
 
 This means your data_points list contains dictionaries instead of raw numbers. To fix this, you must extract just the numeric value when calling .getInfo().
 I DO NOT WANT THE ERROR because you are doing dict + dict I DO NOT WANT THAT
-When collecting data from `.getInfo()`, extract only the raw numeric values (e.g., `float`, `int`) into a list.
+When collecting data from `.evaluate()`, extract only the raw numeric values (e.g., `float`, `int`) into a list.
 
-🔸 When collecting data from `.getInfo()`, **extract only the raw numeric value** for each parameter.
-DO NOT store the entire dictionary returned by `.getInfo()` — instead, extract just the value associated with the parameter name.
-
-✅ For example:
-```python
-value = image.reduceRegion(...).getInfo()
-raw_value = value.get(parameter_name)
-```
-
-Append `raw_value` to your list of data points.
-
-🔸 The final structure should be:
+🔸 The final structure should be used from the dataset and parameter for each through array of values:
 ```python
 data_points = {{
   "datasetID_parameterName": [val1, val2, ..., valN]  # each val is float or int, NOT dict
