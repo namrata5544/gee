@@ -15,7 +15,7 @@ from utils.groq_llm import ChatGroq
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=["https://geeui.vercel.app"])
 # Pull the Groq API key from the env
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 if not GROQ_API_KEY:
