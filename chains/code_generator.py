@@ -117,16 +117,23 @@ Extract value using .reduceRegion() at scale=10000 over:
 point = ee.Geometry.Point({lat}, {lon})
 results = []
 results_lock = threading.Lock()
+done_event = threading.Event()
 total = len(time_blocks)
+completed = 0  # Track completed callbacks
 
 def make_callback(start):
     def callback(value):
         raw_value = value.get(parameter_name)
+        nonlocal completed
+
         with results_lock:
             results.append((start, raw_value))
-            if len(results) == total:
+            completed += 1
+            if completed == total:
+                # ✅ All async evaluations done
                 results.sort()  # Sort by start time
-                data_points[f"{{dataset_id}}_{{parameter_name}}"] = [val for _, val in results]
+                data_points[f"{dataset_id}_{parameter_name}"] = [val for _, val in results]
+                done_event.set()
     return callback
 
 for start, end in time_blocks:
@@ -138,6 +145,9 @@ for start, end in time_blocks:
         maxPixels=1e9
     )
     reduced.evaluate(make_callback(start))
+
+# ✅ Wait until all callbacks are done (prevents early return and CORS timeout)
+done_event.wait()
 
 ```
 Before performing any analysis (like mean, std), you must filter out None values.
