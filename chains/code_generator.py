@@ -115,19 +115,20 @@ Extract value using .reduceRegion() at scale=10000 over:
 ```python
 
 point = ee.Geometry.Point({lat}, {lon})
-data_points[f"{{dataset_id}}_{{parameter_name}}"]
 results = []
+results_lock = threading.Lock()
 total = len(time_blocks)
 
 def make_callback(start):
     def callback(value):
         raw_value = value.get(parameter_name)
-        results.append((start, raw_value))
-        if len(results) == total:
-            results.sort()  # Sort by start time
-            data_points[f"{{dataset_id}}_{{parameter_name}}"] = [val for _, val in results]
+        with results_lock:
+            results.append((start, raw_value))
+            if len(results) == total:
+                results.sort()  # Sort by start time
+                data_points[f"{{dataset_id}}_{{parameter_name}}"] = [val for _, val in results]
     return callback
-  
+
 for start, end in time_blocks:
     filtered_img = image.filterDate(start, end)
     reduced = filtered_img.reduceRegion(
