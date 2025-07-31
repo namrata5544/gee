@@ -14,4 +14,4 @@ INSTRUCTIONS:
 - Choose an appropriate analysis type based on the query intent.
   Supported types include:
   trend, anomaly, seasonal, comparison, correlation, change_detection,
-  classification, clustering, statistics, spatial_distribution, forecast.
+  classification, clustering, statistics, spatial_distribution, forecast. Namrata Sahu rox
